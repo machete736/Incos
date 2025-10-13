@@ -26,6 +26,7 @@ from .forms import (
     ReservaForm,
 )
 
+
 # ============================================
 # 1. DASHBOARD (Inicio)
 # ============================================
@@ -33,14 +34,20 @@ from .forms import (
 def inicio(request):
     """Vista principal (Dashboard) del sistema."""
     context = {'titulo': 'Panel de Administración INCOS'}
-    return render(request, 'Incos_app/home.html', context)
+    return render(request, 'incos_app/home.html', context)
+
 
 # ============================================
 # 2. LOGIN PERSONALIZADO
 # ============================================
 class LoginView(DjangoLoginView):
     """Vista de login para los usuarios y administradores."""
-    template_name = 'Incos_app/Login/login_prestatario.html'
+    template_name = 'incos_app/Login/login_prestatario.html'
+
+    def form_invalid(self, form):
+        """Mostrar mensaje si el login falla."""
+        messages.error(self.request, "Usuario o contraseña incorrectos.")
+        return super().form_invalid(form)
 
 # ============================================
 # 3. GESTIÓN DE USUARIOS / ADMINISTRADORES
@@ -48,7 +55,7 @@ class LoginView(DjangoLoginView):
 class AdminRegistrationView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Usuario
     form_class = CustomUserCreationForm
-    template_name = 'Incos_app/Usuario/admin_register.html'
+    template_name = 'incos_app/Usuario/admin_register.html'
     success_url = reverse_lazy('inicio')
 
     def test_func(self):
@@ -73,7 +80,7 @@ class AdminRegistrationView(LoginRequiredMixin, UserPassesTestMixin, CreateView)
 
 class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Usuario
-    template_name = 'Incos_app/Usuario/usuario_list.html'
+    template_name = 'incos_app/Usuario/usuario_list.html'
     context_object_name = 'usuarios'
 
     def test_func(self):
@@ -87,7 +94,7 @@ class UsuarioListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class UsuarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Usuario
     form_class = CustomUserCreationForm
-    template_name = 'Incos_app/Usuario/usuario_form.html'
+    template_name = 'incos_app/Usuario/usuario_form.html'
     success_url = reverse_lazy('usuario_list')
 
     def test_func(self):
@@ -103,7 +110,7 @@ class UsuarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Usuario
-    template_name = 'Incos_app/Usuario/usuario_confirm_delete.html'
+    template_name = 'incos_app/Usuario/usuario_confirm_delete.html'
     success_url = reverse_lazy('usuario_list')
     context_object_name = 'usuario'
 
@@ -122,14 +129,14 @@ class UsuarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 # ============================================
 class PrestatarioListView(LoginRequiredMixin, ListView):
     model = Prestatario
-    template_name = 'Incos_app/Prestatario/prestatario_list.html'
+    template_name = 'incos_app/Prestatario/prestatario_list.html'
     context_object_name = 'prestatarios'
 
 
 class PrestatarioCreateView(LoginRequiredMixin, CreateView):
     model = Prestatario
     form_class = PrestatarioForm
-    template_name = 'Incos_app/Prestatario/prestatario_form.html'
+    template_name = 'incos_app/Prestatario/prestatario_form.html'
     success_url = reverse_lazy('prestatario_list')
 
     def form_valid(self, form):
@@ -144,7 +151,7 @@ class PrestatarioCreateView(LoginRequiredMixin, CreateView):
 class PrestatarioUpdateView(LoginRequiredMixin, UpdateView):
     model = Prestatario
     form_class = PrestatarioForm
-    template_name = 'Incos_app/Prestatario/prestatario_form.html'
+    template_name = 'incos_app/Prestatario/prestatario_form.html'
     success_url = reverse_lazy('prestatario_list')
 
     def form_valid(self, form):
@@ -158,7 +165,7 @@ class PrestatarioUpdateView(LoginRequiredMixin, UpdateView):
 
 class PrestatarioDeleteView(LoginRequiredMixin, DeleteView):
     model = Prestatario
-    template_name = 'Incos_app/Prestatario/prestatario_confirm_delete.html'
+    template_name = 'incos_app/Prestatario/prestatario_confirm_delete.html'
     success_url = reverse_lazy('prestatario_list')
     context_object_name = 'prestatario'
 
@@ -172,14 +179,14 @@ class PrestatarioDeleteView(LoginRequiredMixin, DeleteView):
 # ============================================
 class ArticuloListView(LoginRequiredMixin, ListView):
     model = Articulo
-    template_name = 'Incos_app/Articulo/articulo_list.html'
+    template_name = 'incos_app/Articulo/articulo_list.html'
     context_object_name = 'articulos'
 
 
 class ArticuloCreateView(LoginRequiredMixin, CreateView):
     model = Articulo
     form_class = ArticuloForm
-    template_name = 'Incos_app/Articulo/articulo_form.html'
+    template_name = 'incos_app/Articulo/articulo_form.html'
     success_url = reverse_lazy('articulo_list')
 
     def form_valid(self, form):
@@ -191,7 +198,7 @@ class ArticuloCreateView(LoginRequiredMixin, CreateView):
 class ArticuloUpdateView(LoginRequiredMixin, UpdateView):
     model = Articulo
     form_class = ArticuloForm
-    template_name = 'Incos_app/Articulo/articulo_form.html'
+    template_name = 'incos_app/Articulo/articulo_form.html'
     success_url = reverse_lazy('articulo_list')
 
     def form_valid(self, form):
@@ -202,7 +209,7 @@ class ArticuloUpdateView(LoginRequiredMixin, UpdateView):
 
 class ArticuloDeleteView(LoginRequiredMixin, DeleteView):
     model = Articulo
-    template_name = 'Incos_app/Articulo/articulo_confirm_delete.html'
+    template_name = 'incos_app/Articulo/articulo_confirm_delete.html'
     success_url = reverse_lazy('articulo_list')
     context_object_name = 'articulo'
 
@@ -215,7 +222,7 @@ class ArticuloDeleteView(LoginRequiredMixin, DeleteView):
 # ============================================
 class PrestamoListView(LoginRequiredMixin, ListView):
     model = Prestamo
-    template_name = 'Incos_app/Prestamo/prestamo_list.html'
+    template_name = 'incos_app/Prestamo/prestamo_list.html'
     context_object_name = 'prestamos'
 
     def get_queryset(self):
@@ -225,7 +232,7 @@ class PrestamoListView(LoginRequiredMixin, ListView):
 class PrestamoCreateView(LoginRequiredMixin, CreateView):
     model = Prestamo
     form_class = PrestamoForm
-    template_name = 'Incos_app/Prestamo/prestamo_form.html'
+    template_name = 'incos_app/Prestamo/prestamo_form.html'
     success_url = reverse_lazy('prestamo_list')
 
     def form_valid(self, form):
@@ -270,7 +277,7 @@ class PrestamoDevolucionView(LoginRequiredMixin, View):
 # 7.1 LISTAR RESERVAS (Read)
 class ReservaListView(LoginRequiredMixin, ListView):
     model = Reserva
-    template_name = 'Incos_app/Reserva/reserva_list.html'
+    template_name = 'incos_app/Reserva/reserva_list.html'
     context_object_name = 'reservas'
 
     def get_queryset(self):
@@ -282,7 +289,7 @@ class ReservaListView(LoginRequiredMixin, ListView):
 class ReservaCreateView(LoginRequiredMixin, CreateView):  # <--- CLASE FALTANTE/ERROR DE CARGA
     model = Reserva
     form_class = ReservaForm
-    template_name = 'Incos_app/Reserva/reserva_form.html'  # Usaremos este en caso de error en el modal
+    template_name = 'incos_app/Reserva/reserva_form.html'  # Usaremos este en caso de error en el modal
     success_url = reverse_lazy('reserva_list')
 
     def form_valid(self, form):
@@ -376,4 +383,4 @@ def calendario_reservas(request):
         'form': ReservaForm(),  # Formulario necesario para el modal
     }
 
-    return render(request, 'Incos_app/Reserva/reserva_calendario.html', context)
+    return render(request, 'incos_app/Reserva/reserva_calendario.html', context)

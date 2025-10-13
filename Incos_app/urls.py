@@ -1,15 +1,20 @@
 # app_name/urls.py
 
-from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
+from django.contrib import admin
 
+from django.urls import path
+from .views import LoginView, inicio
+from django.contrib.auth.views import LogoutView
 urlpatterns = [
     # ============================================
     # AUTENTICACIÓN
     # ============================================
-    path('', views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('', LoginView.as_view(), name='login'),
+    path('inicio/', inicio, name='inicio'),
+    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
 
     # Recuperación de contraseña
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
@@ -20,7 +25,7 @@ urlpatterns = [
     # ============================================
     # DASHBOARD
     # ============================================
-    path('dashboard/', views.inicio, name='inicio'),
+
 
     # ============================================
     # GESTIÓN DE USUARIOS / ADMINISTRADORES
