@@ -1,0 +1,149 @@
+{% extends 'incos_app/base.html' %}
+{% load incos_app_tags %}  {# ¡IMPORTANTE! Debe estar aquí para cargar los filtros #}
+{% block title %}Calendario de Reservas | INCOS{% endblock %}
+
+{% block content %}
+<div class="mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Calendario de Reservas</h3>
+        <p class="h4 text-muted">{{ mes_nombre|upper }} de {{ año }}</p>
+    </div>
+
+    <div class="card shadow-sm border-0 p-3">
+        <table class="table table-bordered text-center" style="table-layout: fixed; height: 400px;">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-danger">Dom</th>
+                    <th scope="col">Lun</th>
+                    <th scope="col">Mar</th>
+                    <th scope="col">Mié</th>
+                    <th scope="col">Jue</th>
+                    <th scope="col">Vie</th>
+                    <th scope="col">Sáb</th>
+                </tr>
+            </thead>
+            <tbody>
+                {# La variable 'calendar' de Python devuelve 0 para Lunes y 6 para Domingo. Lo convertimos a un desplazamiento de celdas. #}
+                {% with semana_inicial=calendar|add:"1"|add:"-"|add:1 %} {# Lunes=0, Domingo=6. Usamos 0-6 #}
+
+                {# Iteramos sobre las 6 filas posibles (0 a 5) #}
+                {% for fila in "012345"|make_list %}
+                    <tr>
+                        {# Iteramos sobre las 7 columnas (0 a 6) #}
+                        {% for columna in "0123456"|make_list %}
+
+                            {# Posición absoluta de la celda (0 a 41) #}
+                            {% with pos_absoluta=fila|times:7|add:columna %}
+
+                            {# Cálculo del número del día (Posición + 1 - Desplazamiento del primer día) #}
+                            {% with num_dia=pos_absoluta|add:"1"|add:"-"|add:semana_inicial %}
+
+                            {% if num_dia > 0 and num_dia <= dias_mes %}
+                                <td class="align-top p-1 day-cell
+                                    {% if num_dia == hoy.day and mes == hoy.month and año == hoy.year %}bg-primary text-white{% endif %}"
+                                    style="border: 1px solid #ddd; cursor:pointer;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#reservaModal"
+                                    data-day="{{ num_dia }}"
+                                    data-month="{{ mes }}"
+                                    data-year="{{ año }}">
+
+                                    <strong class="d-block">{{ num_dia }}</strong>
+
+                                    {% with reservas_count=reservas_por_dia|get_item:num_dia|length %}
+                                        {% if reservas_count > 0 %}
+                                            <span class="badge rounded-pill bg-warning text-dark">{{ reservas_count }} Res.</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            {% else %}
+                                <td class="bg-light text-muted"></td>
+                            {% endif %}
+
+                            {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                {% endwith %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="reservaModal" tabindex="-1" aria-labelledby="reservaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'reserva_create' %}" id="reservaForm">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="reservaModalLabel">Crear Reserva para el día: <span id="modalDateDisplay"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger small">⚠️ Nota: La fecha seleccionada se pre-llenará automáticamente.</p>
+
+                    <input type="hidden" name="fecha_reservada" id="id_fecha_reservada">
+
+                    {% for field in form %}
+                        {% if field.name != 'fecha_reservada' %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Lógica JavaScript para pre-llenar el formulario modal con la fecha del calendario
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const modalDateDisplay = document.getElementById('modalDateDisplay');
+        const fechaReservadaInput = document.getElementById('id_fecha_reservada');
+
+        // Función para formatear la fecha a YYYY-MM-DD
+        function formatDate(year, month, day) {
+            const m = String(month).padStart(2, '0');
+            const d = String(day).padStart(2, '0');
+            return `${year}-${m}-${d}`;
+        }
+
+        // Seleccionamos todas las celdas con la clase 'day-cell'
+        document.querySelectorAll('.day-cell').forEach(cell => {
+            cell.addEventListener('click', function() {
+                // Obtenemos los datos de la fecha de los atributos 'data-' de la celda
+                const day = this.dataset.day;
+                const month = this.dataset.month;
+                const year = this.dataset.year;
+
+                // Preparamos el objeto Date (JS usa meses 0-indexados, por eso 'month - 1')
+                const dateObj = new Date(year, month - 1, day);
+                const formattedDisplay = dateObj.toLocaleDateString('es-ES', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+
+                // Rellenamos el campo oculto con el formato YYYY-MM-DD
+                const formattedDate = formatDate(year, month, day);
+
+                modalDateDisplay.textContent = formattedDisplay;
+                fechaReservadaInput.value = formattedDate;
+            });
+        });
+    });
+</script>
+{% endblock %}

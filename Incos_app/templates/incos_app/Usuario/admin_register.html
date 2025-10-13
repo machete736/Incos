@@ -1,0 +1,35 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Registrar Administrador{% endblock %}
+{% block header %}Registrar Nuevo Usuario{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    Formulario de Registro de Administrador
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {{ form.as_p }} 
+
+                        <button type="submit" class="btn btn-success mt-3">Crear Cuenta de Administrador</button>
+                        <a href="{% url 'inicio' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

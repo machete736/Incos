@@ -1,0 +1,20 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Eliminar Prestatario{% endblock %}
+{% block header %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Advertencia</h4>
+        <p>¿Estás seguro de que deseas eliminar a **{{ prestatario.nombre }} {{ prestatario.apellidopaterno }} (C.I. {{ prestatario.ci }})** del sistema?</p>
+        <hr>
+        <p class="mb-0">Esta acción eliminará permanentemente el registro del prestatario y **podría invalidar los registros de Préstamos o Reservas** asociados a él. ¡No se puede deshacer!</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">Sí, Eliminar Prestatario</button>
+        <a href="{% url 'prestatario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

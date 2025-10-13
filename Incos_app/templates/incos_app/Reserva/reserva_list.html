@@ -1,0 +1,20 @@
+{% extends 'incos_app/base.html' %}
+{% block content %}
+<h2>Listado de Reservas</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Prestatario</th>
+        <th>Recurso</th>
+        <th>Fecha</th>
+    </tr>
+    {% for reserva in reservas %}
+    <tr>
+        <td>{{ reserva.id }}</td>
+        <td>{{ reserva.prestatario }}</td>
+        <td>{{ reserva.recurso }}</td>
+        <td>{{ reserva.fecha_reserva }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Gestión de Préstamos | INCOS{% endblock %}
+{% block header %}Préstamos en Curso y Retrasados{% endblock %}
+
+{% block content %}
+<div class="mt-4">
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'prestamo_create' %}" class="btn btn-success">
+            <i class="bi bi-box-arrow-up-right me-2"></i>Registrar Nuevo Préstamo
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Artículo</th>
+                        <th>Prestatario</th>
+                        <th>Admin</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Prevista Dev.</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in prestamos %}
+                    <tr class="{% if p.estado == 'retrasado' %}table-warning{% elif p.estado == 'perdido' %}table-danger{% endif %}">
+                        <td>{{ p.articulo.nombre }}</td>
+                        <td>{{ p.prestatario.nombre }} {{ p.prestatario.apellidopaterno }}</td>
+                        <td>{{ p.usuario.username }}</td>
+                        <td>{{ p.fecha_prestamo|date:"d M Y" }}</td>
+                        <td><strong>{{ p.fecha_prevista_devolucion|date:"d M Y" }}</strong></td>
+                        <td>
+                            <span class="badge bg-{% if p.estado == 'en_curso' %}primary{% elif p.estado == 'devuelto' %}success{% elif p.estado == 'retrasado' %}warning text-dark{% else %}danger{% endif %}">
+                                {{ p.get_estado_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if p.estado == 'en_curso' or p.estado == 'retrasado' %}
+                                <form method="post" action="{% url 'prestamo_devolver' pk=p.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success" title="Registrar Devolución"
+                                            onclick="return confirm('¿Confirma la devolución de este artículo?');">
+                                        <i class="bi bi-arrow-down-left"></i> Devolver
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted">Finalizado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle me-2"></i> No hay préstamos activos o retrasados actualmente.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

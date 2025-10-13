@@ -1,0 +1,88 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Inicio | INCOS{% endblock %}
+{% block header %}Panel Principal{% endblock %}
+
+{% block content %}
+<div class="row g-4 mt-3">
+    <!-- Tarjetas resumen -->
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h5 class="text-primary mb-1">2</h5>
+            <p class="mb-0">Préstamos Activos</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h5 class="text-success mb-1">0</h5>
+            <p class="mb-0">Devoluciones Este Mes</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h5 class="text-warning mb-1">0</h5>
+            <p class="mb-0">Reservas Pendientes</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h5 class="text-danger mb-1">1</h5>
+            <p class="mb-0">Préstamos Vencidos</p>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de préstamos activos -->
+<div class="card mt-4 shadow-sm border-0">
+    <div class="card-header bg-white">
+        <h5 class="m-0">Préstamos Activos</h5>
+        <small class="text-muted">Gestiona los préstamos en curso</small>
+    </div>
+    <div class="card-body">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Recurso</th>
+                    <th>Préstamo</th>
+                    <th>Vence</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Juan Pérez</strong><br><small>EST-2024-001</small></td>
+                    <td>Llave Aula 301</td>
+                    <td>10/10/25, 1:23 p.m.</td>
+                    <td>10/10/25, 11:23 p.m.</td>
+                    <td><span class="badge bg-primary">Activo</span></td>
+                    <td><a href="#" class="btn btn-sm btn-success">Devolver</a></td>
+                </tr>
+                <tr>
+                    <td><strong>María González</strong><br><small>EST-2024-002</small></td>
+                    <td>Documento Acta 45</td>
+                    <td>9/10/25, 3:23 p.m.</td>
+                    <td>11/10/25, 9:23 p.m.</td>
+                    <td><span class="badge bg-primary">Activo</span></td>
+                    <td><a href="#" class="btn btn-sm btn-success">Devolver</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Acciones rápidas -->
+<div class="card mt-4 shadow-sm border-0">
+    <div class="card-header bg-white">
+        <h5 class="m-0">Acciones Rápidas</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex flex-column gap-2">
+            <a href="#" class="btn btn-outline-primary">Nuevo Préstamo</a>
+            <a href="#" class="btn btn-outline-success">Registrar Devolución</a>
+            <a href="#" class="btn btn-outline-warning">Nueva Reserva</a>
+            <a href="#" class="btn btn-outline-secondary">Enviar Recordatorio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Formulario de Artículo{% endblock %}
+{% block header %}
+    {% if object %}
+        Editar Artículo: {{ object.nombre }}
+    {% else %}
+        Registrar Nuevo Artículo
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Detalles del Recurso
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {{ form.as_p }} 
+
+                    <button type="submit" class="btn btn-success mt-3">
+                        {% if object %}Guardar Cambios{% else %}Registrar Artículo{% endif %}
+                    </button>
+                    <a href="{% url 'articulo_list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

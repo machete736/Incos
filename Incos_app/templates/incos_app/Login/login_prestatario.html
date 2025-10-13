@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - Sistema de Prestaciones</title>
+    <style>
+        /* ... (Tu código CSS se mantiene sin cambios) ... */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: rgba(25, 25, 35, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .login-box h1::before {
+            content: "🔒 ";
+        }
+
+        .login-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-box input[type="text"],
+        .login-box input[type="email"],
+        .login-box input[type="password"] {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .login-box input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 8px #6a11cb;
+        }
+
+        .login-box button {
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-box button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.8);
+        }
+
+        .login-box p {
+            text-align: center;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .login-box a {
+            color: #57a6ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .login-box a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+
+        <h1>Acceso Prestamos INCOS</h1>
+
+        {% if form.errors and not form.non_field_errors %}
+            <p style="color: #ff4d4d; text-align:center;">
+                Tu nombre de usuario o contraseña no son correctos. Inténtalo de nuevo.
+            </p>
+        {% elif form.non_field_errors %}
+             {% for error in form.non_field_errors %}
+                 <p style="color: #ff4d4d; text-align:center;">{{ error }}</p>
+             {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="{{ form.username.name }}"
+                id="{{ form.username.id_for_label }}"
+                placeholder="Nombre de Usuario"
+                required
+            >
+            {{ form.username.errors }}
+
+            <input
+                type="password"
+                name="{{ form.password.name }}"
+                id="{{ form.password.id_for_label }}"
+                placeholder="Contraseña"
+                required
+            >
+            {{ form.password.errors }}
+
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+
+        <p>¿Olvidaste tu contraseña? <a href="{% url 'password_reset' %}">Recuperar Contraseña</a></p>
+
+        <p>Acceso de Prestatarios <a href="{% url 'registro_prestatario' %}">Aquí</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% extends 'incos_app/base.html' %}
+{% block title %}Eliminar Administrador{% endblock %}
+{% block header %}Eliminar Usuario{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Advertencia de Eliminación Permanente</h4>
+        <p>Estás a punto de eliminar al usuario administrador **{{ usuario.username }} ({{ usuario.get_role_display }})**.</p>
+        <hr>
+        <p class="mb-0">Esta acción no se puede deshacer. ¿Estás seguro de que deseas continuar?</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">Sí, Eliminar Permanentemente</button>
+        <a href="{% url 'usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
