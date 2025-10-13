@@ -1,0 +1,47 @@
+# Entornos virtuales
+venv/
+.env/
+.env.bak/
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs y editores
+.idea/
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales, logs, backups
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.swp
+*.swo
+*.bak
+
+# Distribución / empaquetado
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+
+# Archivos de test / caché de pytest
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Archivos de entorno o secretos
+*.env
+*.key
+*.pem
