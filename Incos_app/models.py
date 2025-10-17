@@ -88,12 +88,20 @@ class Prestatario(models.Model):
     apellidomaterno = models.CharField("Apellido Materno", max_length=100)
     ci = models.CharField("Cédula de identidad", max_length=20, unique=True)
     telefono = models.CharField("Teléfono", max_length=20, blank=True, null=True)
+    telegram_chat_id = models.CharField(
+        "Telegram Chat ID", 
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        help_text="El ID único del chat de Telegram del usuario para notificaciones."
+    )
     email = models.EmailField("Correo electrónico", blank=True, null=True)
     tipo = models.CharField("Tipo de prestatario", max_length=30, choices=TIPOS)
     carrera_o_area = models.CharField("Carrera o área", max_length=100, blank=True, null=True)
     estado = models.CharField("Estado", max_length=20, choices=ESTADOS, default='activo')
     fecha_registro = models.DateTimeField("Fecha de registro", auto_now_add=True)
 
+    
     def __str__(self):
         return f"{self.nombre} ({self.tipo})"
 
@@ -162,8 +170,8 @@ class Prestamo(models.Model):
     fecha_prestamo = models.DateTimeField("Fecha de préstamo", auto_now_add=True)
 
     # <--- ¡ASEGÚRATE DE QUE ESTOS CUATRO CAMPOS EXISTAN!
-    fecha_prevista_devolucion = models.DateField("Fecha prevista de devolución")
-    fecha_devolucion = models.DateField("Fecha real de devolución", blank=True, null=True)
+    fecha_prevista_devolucion = models.DateTimeField("Fecha y hora prevista de devolución")
+    fecha_devolucion = models.DateTimeField("Fecha y hora real de devolución", blank=True, null=True)
     estado = models.CharField("Estado del préstamo", max_length=20, choices=ESTADOS, default='en_curso')
     observaciones = models.TextField("Observaciones", blank=True, null=True)
 

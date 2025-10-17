@@ -1,39 +1,27 @@
-# C:\Incos\Incos_app\templatetags\incos_app_tags.py
-
 from django import template
+from django.urls import reverse
 
 register = template.Library()
 
-
-@register.filter
-def get_item(dictionary, key):
-    """Permite buscar un elemento en un diccionario por clave."""
-    if isinstance(dictionary, dict):
-        return dictionary.get(key)
-    return None
-
-
-@register.filter
-def make_list(value):
-    """Convierte una cadena de texto en una lista (útil para el ciclo for)."""
-    return list(value)
-
-
-@register.filter
-def times(value, arg):
-    """Multiplica el valor por el argumento (para ciclos de calendario)."""
-    try:
-        return int(value) * int(arg)
-    except (ValueError, TypeError):
-        return 0  # Devuelve 0 en caso de error para evitar fallos
-
-
-@register.filter
-def add(value, arg):
-    """Suma el valor por el argumento, manejando el caso de resta (usando '-' como separador)."""
-    try:
-        if isinstance(arg, str) and arg.startswith('-'):
-            return int(value) - int(arg[1:])
-        return int(value) + int(arg)
-    except (ValueError, TypeError):
-        return value  # Devuelve el valor original en caso de error
+@register.simple_tag
+def active_link(request, view_name):
+    """
+    Devuelve 'active' si la URL actual coincide con el nombre de la vista, 
+    o si el path contiene una palabra clave asociada.
+    """
+    if request.path == reverse(view_name):
+        return 'active'
+    
+    # Lógica especial para rutas que contienen una palabra
+    keyword_map = {
+        'prestatario_list': 'prestatarios',
+        'reserva_calendario': 'reservas',
+        'articulo_list': 'recursos',
+        'prestamo_list': 'prestamos',
+        'usuario_list': 'usuarios',
+    }
+    
+    if view_name in keyword_map and keyword_map[view_name] in request.path:
+        return 'active'
+        
+    return ''

@@ -32,8 +32,34 @@ from .forms import (
 # ============================================
 @login_required
 def inicio(request):
-    """Vista principal (Dashboard) del sistema."""
-    context = {'titulo': 'Panel de Administración INCOS'}
+    """Vista principal (Dashboard) del sistema con datos dinámicos."""
+    
+    hoy = timezone.localdate()
+    
+    # 1. Estadísticas para las tarjetas
+    total_prestamos_activos = Prestamo.objects.filter(estado='en_curso').count()
+    devoluciones_este_mes = Prestamo.objects.filter(
+        estado='devuelto',
+        fecha_devolucion__month=hoy.month,
+        fecha_devolucion__year=hoy.year
+    ).count()
+    reservas_pendientes = Reserva.objects.filter(estado='activo').count()
+    prestamos_vencidos = Prestamo.objects.filter(
+        estado='en_curso',
+        fecha_prevista_devolucion__lt=hoy
+    ).count()
+
+    # 2. Lista de los últimos 5 préstamos activos para la tabla
+    ultimos_prestamos_activos = Prestamo.objects.filter(estado='en_curso').order_by('-fecha_prestamo')[:5]
+
+    context = {
+        'titulo': 'Panel de Administración INCOS',
+        'total_prestamos_activos': total_prestamos_activos,
+        'devoluciones_este_mes': devoluciones_este_mes,
+        'reservas_pendientes': reservas_pendientes,
+        'prestamos_vencidos': prestamos_vencidos,
+        'ultimos_prestamos_activos': ultimos_prestamos_activos,
+    }
     return render(request, 'incos_app/home.html', context)
 
 
@@ -384,3 +410,59 @@ def calendario_reservas(request):
     }
 
     return render(request, 'incos_app/Reserva/reserva_calendario.html', context)
+
+class PrestamoCreateView(LoginRequiredMixin, CreateView):
+    model = Prestamo
+    form_class = PrestamoForm
+    template_name = 'incos_app/Prestamo/prestamo_form.html'
+    success_url = reverse_lazy('prestamo_list')
+
+    def form_valid(self, form):
+        # Usamos una transacción para asegurar que todo se guarde o nada se guarde si hay un error.
+        with transaction.atomic():
+            form.instance.usuario = self.request.user
+            response = super().form_valid(form)
+            
+            # Obtenemos el préstamo y el artículo recién creados
+            prestamo = self.object
+            articulo = prestamo.articulo
+            
+            # Actualizamos la disponibilidad del artículo
+            articulo.disponibilidad = False
+            articulo.save()
+
+            # --- ¡AQUÍ EMPIEZA LA MAGIA DE N8N! ---
+            # Verificamos si el prestatario tiene un Chat ID de Telegram registrado
+            if prestamo.prestatario.telegram_chat_id:
+                try:
+                    # La URL que copiaste de n8n.
+                    # A futuro, es mejor guardar esto en tu archivo .env
+                    webhook_url = 'https://n8n-c995.onrender.com/webhook/83cfe3e9-9b04-4506-9198-daad00c14587'
+                    
+                    # Preparamos los datos que enviaremos a n8n en formato JSON
+                    datos_para_n8n = {
+                        'chat_id': prestamo.prestatario.telegram_chat_id,
+                        'cliente_nombre': f"{prestamo.prestatario.nombre} {prestamo.prestatario.apellidopaterno}",
+                        'articulo_nombre': articulo.nombre,
+                        'fecha_devolucion': prestamo.fecha_prevista_devolucion.strftime('%d/%m/%Y a las %H:%M hrs'),
+                    }
+
+                    # Enviamos la información a n8n usando una petición POST.
+                    # El timeout de 5 segundos evita que la app se quede colgada si n8n no responde.
+                    requests.post(webhook_url, json=datos_para_n8n, timeout=5)
+                    
+                    messages.info(self.request, "✔️ Notificación de préstamo enviada por Telegram.")
+
+                except requests.exceptions.RequestException as e:
+                    # Si n8n falla por cualquier razón (está dormido, hay un error, etc.),
+                    # no rompemos la aplicación. Solo informamos del problema.
+                    print(f"ERROR: No se pudo conectar con n8n. {e}")
+                    messages.warning(self.request, "⚠️ El préstamo se guardó, pero no se pudo enviar la notificación.")
+            
+            # --- FIN DE LA MAGIA DE N8N ---
+
+            messages.success(
+                self.request,
+                f"✅ Préstamo de '{articulo.nombre}' registrado. Artículo marcado como NO disponible."
+            )
+            return response

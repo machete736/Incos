@@ -2,7 +2,7 @@
 
 from django import forms
 from .models import Usuario, Prestatario, Reserva, Prestamo, Articulo
-
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm
 
 # --------------------------------------------
@@ -79,20 +79,41 @@ class ArticuloForm(forms.ModelForm):
 
 
 class PrestamoForm(forms.ModelForm):
+    # --- CAMBIO IMPORTANTE ---
+    # Definimos el campo explícitamente para tener más control
+    fecha_prevista_devolucion = forms.DateTimeField(
+        label="Fecha y hora prevista de devolución",
+        # Le decimos a Django que acepte el formato que envía el navegador
+        input_formats=['%Y-%m-%dT%H:%M'],
+        # Mantenemos el widget que ya teníamos
+        widget=forms.DateTimeInput(
+            format='%Y-%m-%dT%H:%M',
+            attrs={'type': 'datetime-local'}
+        )
+    )
+    # --- FIN DEL CAMBIO ---
+
     class Meta:
         model = Prestamo
-        # El campo 'usuario' (admin) se asigna en la vista, no en el formulario.
-        # El campo 'estado' y 'fecha_devolucion' no se usan al crear.
         fields = ['articulo', 'prestatario', 'fecha_prevista_devolucion', 'observaciones']
+        # Quitamos el widget de aquí porque ya lo definimos arriba
         widgets = {
-            'fecha_prevista_devolucion': forms.DateInput(attrs={'type': 'date'}),
+            'observaciones': forms.Textarea(attrs={'rows': 4}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filtra el queryset de Artículos para que solo muestre los que tienen disponibilidad=True
+        # Filtra el queryset de Artículos para que solo muestre los disponibles
         self.fields['articulo'].queryset = Articulo.objects.filter(disponibilidad=True)
 
+    def clean_fecha_prevista_devolucion(self):
+        """
+        Validación personalizada para asegurar que la fecha y hora no sean en el pasado.
+        """
+        fecha_prevista = self.cleaned_data.get('fecha_prevista_devolucion')
+        if fecha_prevista and fecha_prevista < timezone.now():
+            raise forms.ValidationError("La fecha y hora de devolución no puede ser en el pasado.")
+        return fecha_prevista
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva

@@ -156,3 +156,13 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 # CONFIGURACIÓN DE CLAVE PRIMARIA POR DEFECTO
 # ============================================================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.app.github.dev",
+    "https://localhost:8000",
+    "http://localhost:8000",
+    # La línea que ya tenías (puedes dejarla o quitarla)
+    "https://crispy-space-halibut-wxx6rj4xpj9fgp4q.github.dev/",
+    
+    # --- ¡AÑADE ESTA LÍNEA NUEVA AQUÍ! ---
+    "https://crispy-space-halibut-wxx6rj4xpj9fgp4q-8000.app.github.dev",
+]

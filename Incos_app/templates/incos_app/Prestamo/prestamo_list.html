@@ -1,12 +1,12 @@
 {% extends 'incos_app/base.html' %}
 {% block title %}Gestión de Préstamos | INCOS{% endblock %}
-{% block header %}Préstamos en Curso y Retrasados{% endblock %}
+{% block header %}Préstamos Activos{% endblock %}
 
 {% block content %}
 <div class="mt-4">
     <div class="d-flex justify-content-end mb-3">
         <a href="{% url 'prestamo_create' %}" class="btn btn-success">
-            <i class="bi bi-box-arrow-up-right me-2"></i>Registrar Nuevo Préstamo
+            <i class="bi bi-plus-circle me-2"></i>Registrar Nuevo Préstamo
         </a>
     </div>
 
@@ -17,44 +17,40 @@
                     <tr>
                         <th>Artículo</th>
                         <th>Prestatario</th>
-                        <th>Admin</th>
-                        <th>Fecha Préstamo</th>
-                        <th>Fecha Prevista Dev.</th>
+                        <th>Vence En</th> <th>Fecha Devolución</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for p in prestamos %}
-                    <tr class="{% if p.estado == 'retrasado' %}table-warning{% elif p.estado == 'perdido' %}table-danger{% endif %}">
+                    <tr>
                         <td>{{ p.articulo.nombre }}</td>
                         <td>{{ p.prestatario.nombre }} {{ p.prestatario.apellidopaterno }}</td>
-                        <td>{{ p.usuario.username }}</td>
-                        <td>{{ p.fecha_prestamo|date:"d M Y" }}</td>
-                        <td><strong>{{ p.fecha_prevista_devolucion|date:"d M Y" }}</strong></td>
                         <td>
-                            <span class="badge bg-{% if p.estado == 'en_curso' %}primary{% elif p.estado == 'devuelto' %}success{% elif p.estado == 'retrasado' %}warning text-dark{% else %}danger{% endif %}">
-                                {{ p.get_estado_display }}
-                            </span>
+                            <strong class="countdown-timer" 
+                                  data-due-date="{{ p.fecha_prevista_devolucion|date:'c' }}">
+                                Calculando...
+                            </strong>
+                        </td>
+                        <td>{{ p.fecha_prevista_devolucion|date:"d M Y, g:i A" }}</td>
+                        <td class="estado-celda">
+                            <span class="badge bg-primary">Activo</span>
                         </td>
                         <td>
-                            {% if p.estado == 'en_curso' or p.estado == 'retrasado' %}
-                                <form method="post" action="{% url 'prestamo_devolver' pk=p.pk %}" style="display:inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-success" title="Registrar Devolución"
-                                            onclick="return confirm('¿Confirma la devolución de este artículo?');">
-                                        <i class="bi bi-arrow-down-left"></i> Devolver
-                                    </button>
-                                </form>
-                            {% else %}
-                                <span class="text-muted">Finalizado</span>
-                            {% endif %}
+                            <form method="post" action="{% url 'prestamo_devolver' pk=p.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success" title="Registrar Devolución"
+                                        onclick="return confirm('¿Confirma la devolución de este artículo?');">
+                                    <i class="bi bi-check2-circle"></i> Devolver
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            <i class="bi bi-check-circle me-2"></i> No hay préstamos activos o retrasados actualmente.
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-check-circle me-2"></i> No hay préstamos activos actualmente.
                         </td>
                     </tr>
                     {% endfor %}
@@ -63,4 +59,53 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timers = document.querySelectorAll('.countdown-timer');
+
+    timers.forEach(timer => {
+        const dueDate = new Date(timer.dataset.dueDate);
+        const fila = timer.closest('tr'); // La fila completa de la tabla
+        const estadoBadge = fila.querySelector('.estado-celda .badge');
+
+        const interval = setInterval(function() {
+            const ahora = new Date();
+            const diferencia = dueDate - ahora;
+
+            // Si el tiempo se acabó
+            if (diferencia <= 0) {
+                clearInterval(interval);
+                timer.innerHTML = "<span class='text-danger'>¡VENCIDO!</span>";
+                if (estadoBadge) {
+                    estadoBadge.className = 'badge bg-danger';
+                    estadoBadge.textContent = 'Vencido';
+                }
+                return;
+            }
+
+            // Calculamos el tiempo restante
+            const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+            // Construimos el texto del contador
+            let tiempoRestante = '';
+            if (dias > 0) {
+                tiempoRestante += `${dias}d `;
+            }
+            
+            // Formateamos para que siempre tengan dos dígitos (ej: 09:05:01)
+            tiempoRestante += `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+            
+            timer.textContent = tiempoRestante;
+
+        }, 1000); // Se actualiza cada segundo
+    });
+});
+</script>
 {% endblock %}

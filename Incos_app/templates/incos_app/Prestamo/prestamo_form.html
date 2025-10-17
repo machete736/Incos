@@ -5,11 +5,11 @@
 {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-md-8">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white">
-                Detalles del Préstamo
+                <h5 class="m-0">Detalles del Préstamo</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
 
@@ -17,13 +17,101 @@
                         <div class="alert alert-danger">{{ form.non_field_errors }}</div>
                     {% endif %}
                     
-                    {{ form.as_p }} 
-
-                    <button type="submit" class="btn btn-success mt-3">Confirmar Préstamo</button>
-                    <a href="{% url 'prestamo_list' %}" class="btn btn-secondary mt-3">Cancelar</a>
+                    <div class="mb-3">
+                        <label for="{{ form.articulo.id_for_label }}" class="form-label">{{ form.articulo.label }}</label>
+                        {{ form.articulo }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.prestatario.id_for_label }}" class="form-label">{{ form.prestatario.label }}</label>
+                        {{ form.prestatario }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.fecha_prevista_devolucion.id_for_label }}" class="form-label">{{ form.fecha_prevista_devolucion.label }}</label>
+                        
+                        <div class="input-group mb-2">
+                            {{ form.fecha_prevista_devolucion }}
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-minutes="30">+ 30 min</button>
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-hours="1">+ 1 hora</button>
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-hours="2">+ 2 horas</button>
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-hours="5">+ 5 horas</button>
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-days="1">+ 1 día</button>
+                            <button class="btn btn-sm btn-outline-secondary duration-btn" data-days="7">+ 1 semana</button>
+                        </div>
+                        {% if form.fecha_prevista_devolucion.errors %}
+                            <div class="text-danger small mt-1">{{ form.fecha_prevista_devolucion.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.observaciones.id_for_label }}" class="form-label">{{ form.observaciones.label }}</label>
+                        {{ form.observaciones }}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">Confirmar Préstamo</button>
+                        <a href="{% url 'prestamo_list' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ---- ESTILO PARA LOS CAMPOS DEL FORMULARIO ----
+    const form = document.querySelector('form');
+    form.querySelectorAll('select, input, textarea').forEach(function(field) {
+        if (field.type !== 'checkbox') {
+            field.classList.add('form-control');
+        }
+    });
+
+    // ---- LÓGICA PARA LOS BOTONES DE DURACIÓN ----
+    const fechaInput = document.getElementById('id_fecha_prevista_devolucion');
+    const durationButtons = document.querySelectorAll('.duration-btn');
+
+    durationButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            // Prevenimos que el botón envíe el formulario
+            event.preventDefault();
+
+            const minutesToAdd = parseInt(this.dataset.minutes) || 0;
+            const hoursToAdd = parseInt(this.dataset.hours) || 0;
+            const daysToAdd = parseInt(this.dataset.days) || 0;
+
+            // Tomamos la fecha y hora actual
+            const ahora = new Date();
+            
+            // Añadimos la duración del botón
+            ahora.setMinutes(ahora.getMinutes() + minutesToAdd);
+            ahora.setHours(ahora.getHours() + hoursToAdd);
+            ahora.setDate(ahora.getDate() + daysToAdd);
+            
+            // Corregimos el desfase de la zona horaria para el formato del input
+            ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+            
+            // Formateamos la fecha al formato que necesita el input 'datetime-local' (YYYY-MM-DDTHH:MM)
+            const fechaFormateada = ahora.toISOString().slice(0, 16);
+            
+            // Actualizamos el valor del campo
+            fechaInput.value = fechaFormateada;
+        });
+    });
+
+    // ---- LÓGICA PARA BLOQUEAR FECHAS PASADAS (LA MANTENEMOS) ----
+    if (fechaInput) {
+        const ahora = new Date();
+        ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+        const fechaMinima = ahora.toISOString().slice(0, 16);
+        fechaInput.setAttribute('min', fechaMinima);
+    }
+});
+</script>
 {% endblock %}
