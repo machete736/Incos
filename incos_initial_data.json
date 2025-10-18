@@ -1,0 +1,587 @@
+[
+{
+  "model": "Incos_app.usuario",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$yzckOWNQpe36HcbqwaJeBz$rLwQ8asocUDdfyK2o7N5t4uLiAeXCe4Et5wZOy7kD0M=",
+    "last_login": "2025-10-18T15:21:44.458Z",
+    "is_superuser": true,
+    "username": "AdministradorIncos",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-10-13T18:44:14.478Z",
+    "nombre": "",
+    "apellido_paterno": "",
+    "apellido_materno": null,
+    "email": "marcelchucaespinoza123@gmail.com",
+    "role": "admin",
+    "created_at": "2025-10-13T18:44:14.802Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "Incos_app.usuario",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$kCr1vdOU485XtYYC9rdyJN$v4XaRrLE2H8qnp16Mo+kpJpChXXG9lwHVXiyrFWsA9k=",
+    "last_login": "2025-10-16T21:25:40.945Z",
+    "is_superuser": false,
+    "username": "Marcel_Incos",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-10-16T20:52:58.478Z",
+    "nombre": "Marcel",
+    "apellido_paterno": "Chuca",
+    "apellido_materno": "Espinoza",
+    "email": "marcelchucaespinoza123321@gmail.com",
+    "role": "superadmin",
+    "created_at": "2025-10-16T20:52:59.137Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "Incos_app.prestatario",
+  "pk": 1,
+  "fields": {
+    "nombre": "Juan",
+    "apellidopaterno": "Lopez",
+    "apellidomaterno": "Ramirez",
+    "ci": "9644554",
+    "telefono": "79717901",
+    "telegram_chat_id": null,
+    "email": "juan123@gmail.com",
+    "tipo": "estudiante",
+    "carrera_o_area": "Contabilidad",
+    "estado": "activo",
+    "fecha_registro": "2025-10-16T20:57:11.858Z"
+  }
+},
+{
+  "model": "Incos_app.prestatario",
+  "pk": 2,
+  "fields": {
+    "nombre": "Daniel",
+    "apellidopaterno": "Miranda",
+    "apellidomaterno": "Ordoñez",
+    "ci": "685745",
+    "telefono": "79379506",
+    "telegram_chat_id": "938589238",
+    "email": "daniel123@gmail.com",
+    "tipo": "estudiante",
+    "carrera_o_area": "Sistemas",
+    "estado": "activo",
+    "fecha_registro": "2025-10-17T15:05:49.698Z"
+  }
+},
+{
+  "model": "Incos_app.prestatario",
+  "pk": 5,
+  "fields": {
+    "nombre": "Nilser",
+    "apellidopaterno": "Choquetopa",
+    "apellidomaterno": "Chungara",
+    "ci": "7756546",
+    "telefono": "64971499",
+    "telegram_chat_id": "7595700363",
+    "email": "nilser@gmail.com",
+    "tipo": "estudiante",
+    "carrera_o_area": "Sistemas",
+    "estado": "activo",
+    "fecha_registro": "2025-10-17T17:49:31.211Z"
+  }
+},
+{
+  "model": "Incos_app.prestatario",
+  "pk": 6,
+  "fields": {
+    "nombre": "Marcel",
+    "apellidopaterno": "Chuca",
+    "apellidomaterno": "Espinoza",
+    "ci": "9432219",
+    "telefono": "79717901",
+    "telegram_chat_id": "5502691171",
+    "email": "marcelchucaespinoza123@gmail.com",
+    "tipo": "estudiante",
+    "carrera_o_area": "Sistemas",
+    "estado": "activo",
+    "fecha_registro": "2025-10-17T19:43:33.588Z"
+  }
+},
+{
+  "model": "Incos_app.articulo",
+  "pk": 1,
+  "fields": {
+    "nombre": "proyecto orion",
+    "categoria": "documento",
+    "descripcion": "el documento tiene la informacion de la pagina de orion",
+    "disponibilidad": false,
+    "ubicacion": "despacho",
+    "fecha_registro": "2025-10-16T20:58:58.776Z"
+  }
+},
+{
+  "model": "Incos_app.articulo",
+  "pk": 2,
+  "fields": {
+    "nombre": "Taller de redes",
+    "categoria": "aula",
+    "descripcion": "Taller de redes practica de redes",
+    "disponibilidad": true,
+    "ubicacion": "Aula 3",
+    "fecha_registro": "2025-10-17T16:26:15.114Z"
+  }
+},
+{
+  "model": "Incos_app.articulo",
+  "pk": 3,
+  "fields": {
+    "nombre": "Cargado",
+    "categoria": "equipo",
+    "descripcion": "2 metros",
+    "disponibilidad": false,
+    "ubicacion": null,
+    "fecha_registro": "2025-10-18T14:57:21.576Z"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 1,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 1,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-16T21:43:25.222Z",
+    "fecha_prevista_devolucion": "2025-10-16T00:00:00Z",
+    "fecha_devolucion": "2025-10-16T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "pagina 23 roto"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 2,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 2,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T15:08:22.613Z",
+    "fecha_prevista_devolucion": "2025-10-17T15:37:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "Tapa del proyecto con rayones"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 4,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 2,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T16:06:56.770Z",
+    "fecha_prevista_devolucion": "2025-10-17T16:36:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "pagina 5 rota"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 9,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 5,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T17:57:38.094Z",
+    "fecha_prevista_devolucion": "2025-10-17T18:27:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "ll"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 10,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 5,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T18:02:15.520Z",
+    "fecha_prevista_devolucion": "2025-10-17T18:32:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "aa"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 11,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 5,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T18:07:35.427Z",
+    "fecha_prevista_devolucion": "2025-10-17T18:37:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "mm"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 12,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T19:44:02.198Z",
+    "fecha_prevista_devolucion": "2025-10-17T20:13:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 13,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T19:59:12.639Z",
+    "fecha_prevista_devolucion": "2025-10-17T20:28:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "aa"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 14,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:00:35.750Z",
+    "fecha_prevista_devolucion": "2025-10-17T20:30:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 15,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:04:34.973Z",
+    "fecha_prevista_devolucion": "2025-10-17T20:34:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 16,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:34:39.531Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:04:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 17,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:53:52.056Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:23:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 18,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:59:11.971Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:29:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 19,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T20:59:46.678Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:29:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 20,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:00:07.052Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:59:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 21,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:04:46.177Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:34:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 22,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:22:28.239Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:52:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": "a"
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 23,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:25:29.254Z",
+    "fecha_prevista_devolucion": "2025-10-17T21:55:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 24,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:30:50.141Z",
+    "fecha_prevista_devolucion": "2025-10-17T22:00:00Z",
+    "fecha_devolucion": "2025-10-18T14:27:16.837Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 25,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:32:08.319Z",
+    "fecha_prevista_devolucion": "2025-10-17T22:01:00Z",
+    "fecha_devolucion": "2025-10-17T04:00:00Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 26,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-17T21:33:02.803Z",
+    "fecha_prevista_devolucion": "2025-10-17T22:02:00Z",
+    "fecha_devolucion": "2025-10-18T14:27:03.376Z",
+    "estado": "devuelto",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 27,
+  "fields": {
+    "articulo": 3,
+    "prestatario": 5,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-18T14:57:54.360Z",
+    "fecha_prevista_devolucion": "2025-10-18T15:57:00Z",
+    "fecha_devolucion": null,
+    "estado": "en_curso",
+    "observaciones": ""
+  }
+},
+{
+  "model": "Incos_app.prestamo",
+  "pk": 28,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "usuario": 1,
+    "fecha_prestamo": "2025-10-18T15:03:31.043Z",
+    "fecha_prevista_devolucion": "2025-10-25T04:00:00Z",
+    "fecha_devolucion": null,
+    "estado": "en_curso",
+    "observaciones": "Generado a partir de la Reserva #1. "
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 1,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "fecha_reserva": "2025-10-18T14:05:24.498Z",
+    "fecha_inicio": "2025-10-18",
+    "fecha_fin": "2025-10-25",
+    "estado": "completado",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 2,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 1,
+    "fecha_reserva": "2025-10-18T14:24:34.149Z",
+    "fecha_inicio": "2025-10-18",
+    "fecha_fin": "2025-10-19",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 3,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "fecha_reserva": "2025-10-18T14:28:07.130Z",
+    "fecha_inicio": "2025-10-18",
+    "fecha_fin": "2025-10-19",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 4,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 2,
+    "fecha_reserva": "2025-10-18T14:32:11.566Z",
+    "fecha_inicio": "2025-10-19",
+    "fecha_fin": "2025-10-26",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 5,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 1,
+    "fecha_reserva": "2025-10-18T14:45:28.635Z",
+    "fecha_inicio": "2025-10-24",
+    "fecha_fin": "2025-10-25",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 6,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 2,
+    "fecha_reserva": "2025-10-18T14:50:53.205Z",
+    "fecha_inicio": "2025-10-27",
+    "fecha_fin": "2025-10-30",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 7,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 2,
+    "fecha_reserva": "2025-10-18T14:53:27.613Z",
+    "fecha_inicio": "2025-10-28",
+    "fecha_fin": "2025-10-31",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 8,
+  "fields": {
+    "articulo": 1,
+    "prestatario": 6,
+    "fecha_reserva": "2025-10-18T14:59:59.427Z",
+    "fecha_inicio": "2025-10-24",
+    "fecha_fin": "2025-10-25",
+    "estado": "activo",
+    "comentarios": ""
+  }
+},
+{
+  "model": "Incos_app.reserva",
+  "pk": 9,
+  "fields": {
+    "articulo": 2,
+    "prestatario": 2,
+    "fecha_reserva": "2025-10-18T15:03:11.407Z",
+    "fecha_inicio": "2025-10-26",
+    "fecha_fin": "2025-10-28",
+    "estado": "activo",
+    "comentarios": ""
+  }
+}
+]
