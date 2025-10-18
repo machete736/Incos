@@ -29,9 +29,8 @@ class PrestamoAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'prestatario', 'articulo', 'fecha_prestamo', 'fecha_prevista_devolucion', 'estado')
     list_filter = ('estado',)
     search_fields = ('prestatario__nombre', 'articulo__nombre')
-
 @admin.register(Reserva)
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'prestatario', 'articulo', 'fecha_reservada', 'estado')
-    list_filter = ('estado',)
-    search_fields = ('prestatario__nombre', 'articulo__nombre')
+    list_display = ('articulo', 'prestatario', 'estado', 'fecha_inicio', 'fecha_fin')
+    list_filter = ('estado', 'fecha_inicio', 'fecha_fin') # <-- También actualiza esto
+    search_fields = ('articulo__nombre', 'prestatario__nombre')

@@ -1,6 +1,12 @@
 {% extends 'incos_app/base.html' %}
-{% block title %}Registrar Préstamo{% endblock %}
-{% block header %}Registrar Nuevo Préstamo{% endblock %}
+{% block title %}Gestión de Préstamo{% endblock %}
+{% block header %}
+    {% if form.instance.pk %}
+        Editar Préstamo #{{ form.instance.pk }}
+    {% else %}
+        Registrar Nuevo Préstamo
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mt-4">
@@ -33,6 +39,8 @@
                         <div class="input-group mb-2">
                             {{ form.fecha_prevista_devolucion }}
                         </div>
+                        
+                        {% if not form.instance.pk %}
                         <div class="d-flex flex-wrap gap-2">
                             <button class="btn btn-sm btn-outline-secondary duration-btn" data-minutes="30">+ 30 min</button>
                             <button class="btn btn-sm btn-outline-secondary duration-btn" data-hours="1">+ 1 hora</button>
@@ -41,6 +49,8 @@
                             <button class="btn btn-sm btn-outline-secondary duration-btn" data-days="1">+ 1 día</button>
                             <button class="btn btn-sm btn-outline-secondary duration-btn" data-days="7">+ 1 semana</button>
                         </div>
+                        {% endif %}
+                        
                         {% if form.fecha_prevista_devolucion.errors %}
                             <div class="text-danger small mt-1">{{ form.fecha_prevista_devolucion.errors.0 }}</div>
                         {% endif %}
@@ -52,7 +62,12 @@
                     </div>
                     
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-success">Confirmar Préstamo</button>
+                        {% if form.instance.pk %}
+                            <button type="submit" class="btn btn-primary">Guardar Cambios del Préstamo</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-success">Confirmar Préstamo</button>
+                        {% endif %}
+                        
                         <a href="{% url 'prestamo_list' %}" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </form>
@@ -73,8 +88,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ---- LÓGICA PARA LOS BOTONES DE DURACIÓN ----
+    // ---- LÓGICA PARA LOS BOTONES DE DURACIÓN (Solo si se está creando un préstamo) ----
     const fechaInput = document.getElementById('id_fecha_prevista_devolucion');
+    
+    // Verificamos si existe el elemento para asegurarnos de que solo se ejecute al crear
+    if (!document.querySelector('.duration-btn')) {
+        // Bloquear fechas pasadas (se mantiene para la edición también)
+        if (fechaInput) {
+            const ahora = new Date();
+            ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+            const fechaMinima = ahora.toISOString().slice(0, 16);
+            fechaInput.setAttribute('min', fechaMinima);
+        }
+        return; 
+    }
+
     const durationButtons = document.querySelectorAll('.duration-btn');
 
     durationButtons.forEach(button => {
@@ -105,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ---- LÓGICA PARA BLOQUEAR FECHAS PASADAS (LA MANTENEMOS) ----
+    // ---- LÓGICA PARA BLOQUEAR FECHAS PASADAS ----
     if (fechaInput) {
         const ahora = new Date();
         ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());

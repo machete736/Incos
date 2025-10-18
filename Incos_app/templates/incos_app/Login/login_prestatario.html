@@ -70,6 +70,21 @@
             text-align: center;
             margin-bottom: 10px;
         }
+        /* Estilo para el enlace de contraseña */
+        .password-reset-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .password-reset-link a {
+            color: #92b5e9;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .password-reset-link a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +107,10 @@
             {{ form.password }}
             <button type="submit">Iniciar Sesión</button>
         </form>
-    </div>
+        
+        <div class="password-reset-link">
+            <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+        </div>
+        </div>
 </body>
 </html>

@@ -1,4 +1,6 @@
 {% extends 'incos_app/base.html' %}
+{% load static %}
+
 {% block title %}Lista de Prestatarios | INCOS{% endblock %}
 {% block header %}Gestión de Prestatarios (Alumnos/Profesores){% endblock %}
 
@@ -11,6 +13,52 @@
         </a>
     </div>
 
+    <div class="card card-body mb-3 border-0 shadow-sm">
+        <form method="GET" class="row g-3 align-items-center">
+            
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por Nombre, C.I. o Teléfono..." 
+                       value="{{ request.GET.search }}" aria-label="Buscar prestatario">
+            </div>
+            
+            <div class="col-md-3">
+                <select name="type" class="form-select" aria-label="Filtrar por tipo">
+                    <option value="">Todos los Tipos</option>
+                    <option value="estudiante" 
+                            {% if request.GET.type == 'estudiante' %}selected{% endif %}>
+                        Estudiante
+                    </option>
+                    <option value="profesor" 
+                            {% if request.GET.type == 'profesor' %}selected{% endif %}>
+                        Profesor
+                    </option>
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <select name="status" class="form-select" aria-label="Filtrar por estado">
+                    <option value="">Todos los Estados</option>
+                    <option value="activo" 
+                            {% if request.GET.status == 'activo' %}selected{% endif %}>
+                        Activo
+                    </option>
+                    <option value="inactivo" 
+                            {% if request.GET.status == 'inactivo' %}selected{% endif %}>
+                        Inactivo
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a href="{% url 'prestatario_list' %}" class="btn btn-outline-secondary">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <table class="table table-hover align-middle">
@@ -49,7 +97,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
-                            <i class="bi bi-people-fill me-2"></i> No hay prestatarios registrados en el sistema.
+                            <i class="bi bi-people-fill me-2"></i> No hay prestatarios que coincidan con la búsqueda.
                         </td>
                     </tr>
                     {% endfor %}

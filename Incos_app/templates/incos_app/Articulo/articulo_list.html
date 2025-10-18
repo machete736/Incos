@@ -1,4 +1,6 @@
 {% extends 'incos_app/base.html' %}
+{% load static %}
+
 {% block title %}Lista de Recursos | INCOS{% endblock %}
 {% block header %}Gestión de Artículos (Recursos){% endblock %}
 
@@ -11,6 +13,40 @@
         </a>
     </div>
 
+    <div class="card card-body mb-3 border-0 shadow-sm">
+        <form method="GET" class="row g-3 align-items-center">
+            
+            <div class="col-md-5">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o descripción..." 
+                       value="{{ request.GET.search }}" aria-label="Buscar artículo">
+            </div>
+            
+            <div class="col-md-4">
+                <select name="status" class="form-select" aria-label="Filtrar por estado">
+                    <option value="">Mostrar Todos los Estados</option>
+                    
+                    <option value="available" 
+                            {% if request.GET.status == 'available' %}selected{% endif %}>
+                        Solo Disponibles
+                    </option>
+                    
+                    <option value="on_loan" 
+                            {% if request.GET.status == 'on_loan' %}selected{% endif %}>
+                        Solo En Préstamo
+                    </option>
+                </select>
+            </div>
+            
+            <div class="col-md-3 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a href="{% url 'articulo_list' %}" class="btn btn-outline-secondary">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <table class="table table-hover align-middle">
@@ -25,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for articulo in articulos %}
+                    {% for articulo in object_list %} {# Use object_list or articulos based on your view #}
                     <tr>
                         <td><strong>{{ articulo.nombre }}</strong></td>
                         <td>{{ articulo.get_categoria_display }}</td>
@@ -42,7 +78,6 @@
                             <a href="{% url 'articulo_update' pk=articulo.pk %}" class="btn btn-sm btn-primary" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
-
                             <a href="{% url 'articulo_delete' pk=articulo.pk %}" class="btn btn-sm btn-danger" title="Eliminar">
                                 <i class="bi bi-trash"></i>
                             </a>
@@ -51,7 +86,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">
-                            <i class="bi bi-box-seam me-2"></i> No hay artículos registrados en el inventario.
+                            <i class="bi bi-box-seam me-2"></i> No hay artículos que coincidan con la búsqueda.
                         </td>
                     </tr>
                     {% endfor %}

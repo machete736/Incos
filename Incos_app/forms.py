@@ -51,7 +51,7 @@ class PrestatarioForm(forms.ModelForm):
 
     class Meta:
         model = Prestatario
-        fields = ['nombre', 'apellidopaterno', 'apellidomaterno', 'ci', 'telefono', 'email', 'tipo', 'carrera_o_area',
+        fields = ['nombre', 'apellidopaterno', 'apellidomaterno', 'ci', 'telefono', 'email', 'telegram_chat_id','tipo', 'carrera_o_area',
                   'estado']
         widgets = {
             'tipo': forms.Select(attrs={'class': 'form-control'}),
@@ -59,16 +59,11 @@ class PrestatarioForm(forms.ModelForm):
             # Puedes añadir más widgets aquí para estilos o tipos de input específicos
         }
 
-
 # --------------------------------------------
 # Formularios para la gestión de Artículos
 # --------------------------------------------
 
 class ArticuloForm(forms.ModelForm):
-    """
-    Formulario para crear y actualizar artículos.
-    """
-
     class Meta:
         model = Articulo
         fields = ['nombre', 'categoria', 'descripcion', 'disponibilidad', 'ubicacion']
@@ -79,46 +74,51 @@ class ArticuloForm(forms.ModelForm):
 
 
 class PrestamoForm(forms.ModelForm):
-    # --- CAMBIO IMPORTANTE ---
-    # Definimos el campo explícitamente para tener más control
+    # ... (Definición de fecha_prevista_devolucion) ...
     fecha_prevista_devolucion = forms.DateTimeField(
         label="Fecha y hora prevista de devolución",
-        # Le decimos a Django que acepte el formato que envía el navegador
         input_formats=['%Y-%m-%dT%H:%M'],
-        # Mantenemos el widget que ya teníamos
         widget=forms.DateTimeInput(
             format='%Y-%m-%dT%H:%M',
             attrs={'type': 'datetime-local'}
         )
     )
-    # --- FIN DEL CAMBIO ---
 
     class Meta:
         model = Prestamo
         fields = ['articulo', 'prestatario', 'fecha_prevista_devolucion', 'observaciones']
-        # Quitamos el widget de aquí porque ya lo definimos arriba
         widgets = {
             'observaciones': forms.Textarea(attrs={'rows': 4}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Filtra el queryset de Artículos para que solo muestre los disponibles
+        # 🟢 FILTRO PARA PRÉSTAMO: Solo artículos disponibles
         self.fields['articulo'].queryset = Articulo.objects.filter(disponibilidad=True)
+        self.fields['articulo'].widget.attrs['class'] = 'form-control'
+        self.fields['prestatario'].widget.attrs['class'] = 'form-control'
+
 
     def clean_fecha_prevista_devolucion(self):
-        """
-        Validación personalizada para asegurar que la fecha y hora no sean en el pasado.
-        """
         fecha_prevista = self.cleaned_data.get('fecha_prevista_devolucion')
         if fecha_prevista and fecha_prevista < timezone.now():
             raise forms.ValidationError("La fecha y hora de devolución no puede ser en el pasado.")
         return fecha_prevista
+
+
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        # Excluye 'fecha_reserva' (auto_now_add) y 'estado' (default='activo')
-        fields = ['articulo', 'prestatario', 'fecha_reservada', 'comentarios']
+        fields = ['articulo', 'prestatario', 'fecha_inicio', 'fecha_fin', 'comentarios']
         widgets = {
-            'fecha_reservada': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_inicio': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'fecha_fin': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+            'comentarios': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+            'articulo': forms.Select(attrs={'class': 'form-control'}),
+            'prestatario': forms.Select(attrs={'class': 'form-control'}),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 🟢 FILTRO PARA RESERVA: Solo artículos disponibles (¡ESTA ES LA CORRECCIÓN CLAVE!)
+        self.fields['articulo'].queryset = Articulo.objects.filter(disponibilidad=True)

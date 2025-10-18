@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 class Usuario(AbstractUser):
     """
     Representa a los administradores del sistema INCOS.
@@ -184,13 +185,9 @@ class Prestamo(models.Model):
         verbose_name = "Préstamo"
         verbose_name_plural = "Préstamos"
         ordering = ['-fecha_prestamo']
-
-# ============================================
-# MODELO DE RESERVAS
-# ============================================
 class Reserva(models.Model):
     """
-    Registra las reservas de artículos realizadas por prestatarios.
+    Registra las reservas de artículos con rango de fecha y hora.
     """
     ESTADOS = [
         ('activo', 'Activo'),
@@ -199,12 +196,27 @@ class Reserva(models.Model):
         ('vencido', 'Vencido'),
     ]
 
-    articulo = models.ForeignKey(Articulo, on_delete=models.CASCADE, verbose_name="Artículo reservado")
-    prestatario = models.ForeignKey(Prestatario, on_delete=models.CASCADE, verbose_name="Prestatario")
+    articulo = models.ForeignKey('Articulo', on_delete=models.CASCADE, verbose_name="Artículo reservado")
+    prestatario = models.ForeignKey('Prestatario', on_delete=models.CASCADE, verbose_name="Prestatario")
     fecha_reserva = models.DateTimeField("Fecha de solicitud", auto_now_add=True)
-    fecha_reservada = models.DateField("Fecha para la reserva")
+
+    # --- CAMBIOS CLAVE: Usamos DateTimeField para incluir la hora ---
+    fecha_inicio = models.DateTimeField("Fecha y hora de inicio de la reserva")
+    fecha_fin = models.DateTimeField("Fecha y hora de fin de la reserva")
+    # -------------------------------------------------------------
+
     estado = models.CharField("Estado de la reserva", max_length=20, choices=ESTADOS, default='activo')
     comentarios = models.TextField("Comentarios", blank=True, null=True)
+
+    def clean(self):
+        # Validación 1: Fecha de fin no puede ser anterior a la de inicio
+        if self.fecha_fin and self.fecha_inicio and self.fecha_fin < self.fecha_inicio:
+            raise ValidationError("La fecha y hora de fin no puede ser anterior a la de inicio.")
+
+        # Validación 2: NO permitir crear reservas para fechas u horas pasadas
+        # Usamos self.pk is None para que solo se aplique al CREAR (no al editar)
+        if self.pk is None and self.fecha_inicio and self.fecha_inicio < timezone.now():
+            raise ValidationError("No se pueden crear reservas para fechas u horas pasadas. La reserva debe iniciar en el futuro.")
 
     def __str__(self):
         return f"Reserva #{self.id} - {self.articulo.nombre} ({self.estado})"
@@ -212,9 +224,7 @@ class Reserva(models.Model):
     class Meta:
         verbose_name = "Reserva"
         verbose_name_plural = "Reservas"
-        ordering = ['-fecha_reserva']
-
-
+        ordering = ['fecha_inicio']
 # ============================================
 # (OPCIONAL) INTERACCIONES DEL CHATBOT
 # ============================================

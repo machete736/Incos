@@ -59,6 +59,8 @@ path('prestatarios/registro/', views.PrestatarioCreateView.as_view(), name='regi
     path('prestamos/crear/', views.PrestamoCreateView.as_view(), name='prestamo_create'),
     path('prestamos/devolver/<int:pk>/', views.PrestamoDevolucionView.as_view(), name='prestamo_devolver'),
 
+    path('prestamos/editar/<int:pk>/', views.PrestamoUpdateView.as_view(), name='prestamo_update'),
+#
     # ============================================
     # GESTIÓN DE RESERVAS
     # ============================================
@@ -66,4 +68,8 @@ path('prestatarios/registro/', views.PrestatarioCreateView.as_view(), name='regi
     path('reservas/crear/', views.ReservaCreateView.as_view(), name='reserva_create'),
     path('reservas/calendario/', views.calendario_reservas, name='reserva_calendario'),
     path('reservas/convertir/<int:pk>/', views.ReservaToPrestamoView.as_view(), name='reserva_to_prestamo'),
+    # --- RUTAS DEL CALENDARIO (MODIFICADAS) ---
+    path('reservas/calendario/', views.calendario_reservas, name='reserva_calendario'),
+    path('reservas/calendario/<int:year>/<int:month>/', views.calendario_reservas, name='reserva_calendario_nav'),
+    path('reservas/editar/<int:pk>/', views.ReservaUpdateView.as_view(), name='reserva_update'),
 ]

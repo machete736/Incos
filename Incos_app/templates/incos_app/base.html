@@ -9,20 +9,49 @@
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'icons/bootstrap-icons.css' %}">
-
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    
     <style>
+        /* Estilos base y Dark Mode */
         body {
             background-color: #f8fafc;
             font-family: 'Segoe UI', sans-serif;
         }
+        
+        /* --- ESTILOS DARK MODE (Correctos) --- */
+        body.dark-mode {
+            background-color: #121212 !important;
+            color: #e0e0e0;
+        }
+        body.dark-mode .card,
+        body.dark-mode .card-header,
+        body.dark-mode .list-group-item {
+            background-color: #1e1e1e !important;
+            color: #e0e0e0;
+            border-color: #333 !important;
+        }
+        body.dark-mode .table {
+            color: #e0e0e0;
+        }
+        body.dark-mode .table thead th {
+            border-bottom-color: #444 !important;
+        }
+        body.dark-mode .text-muted {
+            color: #a0a0a0 !important;
+        }
+        /* ------------------------------------- */
+
         .sidebar {
             height: 100vh;
-            background: #1e3a8a; /* Azul INCOS */
+            background: #1e3a8a; 
             color: #fff;
-            position: fixed;
-            width: 240px;
+            position: fixed; 
+            width: 240px; 
             top: 0;
             left: 0;
+            z-index: 1030; 
         }
         .sidebar h4 {
             padding: 1.5rem;
@@ -39,12 +68,13 @@
         }
         .sidebar a:hover,
         .sidebar a.active {
-            background-color: #2563eb; /* Azul más brillante para selección */
+            background-color: #2563eb; 
             color: #fff;
         }
         .main-content {
-            margin-left: 240px; /* Ancho del sidebar */
+            margin-left: 240px; 
             padding: 20px 30px;
+            overflow-x: hidden; 
         }
         .topbar {
             display: flex;
@@ -52,11 +82,19 @@
             align-items: center;
             padding-bottom: 10px;
             border-bottom: 2px solid #e2e8f0;
+            padding-top: 20px; 
         }
         .user-info {
             text-align: right;
         }
+
+        /* Fix para Select2 en Modal */
+        .select2-container--open {
+            z-index: 1060; 
+        }
     </style>
+    
+    {% block extra_styles %}{% endblock %}
 </head>
 
 <body>
@@ -79,10 +117,12 @@
         <div class="mt-auto p-3 text-center">
             <p class="text-light fw-bold mb-0">{{ request.user.nombre_completo }}</p>
             <small>{{ request.user.email }}</small>
-            <div class="mt-2">
-                <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light">Cerrar Sesión</a>
+            
+            <form action="{% url 'logout' %}" method="post" class="mt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-light">Cerrar Sesión</button>
+            </form>
             </div>
-        </div>
     </div>
 
     <div class="main-content">
@@ -96,7 +136,7 @@
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button typebutton" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
             </div>
@@ -107,6 +147,43 @@
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRz/GaHYg/4g1dfIRhS3eCg/q5d0T49h4S=" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script src="{% static 'js/es.js' %}"></script> 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const theme = localStorage.getItem('theme');
+            const switchElement = document.getElementById('darkModeSwitch');
+
+            // 1. Aplicar el tema guardado al cargar
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+            }
+            
+            // 2. Escuchar el cambio en el switch (solo si existe en la página actual)
+            if (switchElement) {
+                // Sincronizar el estado del switch con localStorage
+                if (theme === 'dark') {
+                    switchElement.checked = true;
+                }
+                
+                switchElement.addEventListener('change', () => {
+                    if (switchElement.checked) {
+                        body.classList.add('dark-mode');
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        body.classList.remove('dark-mode');
+                        localStorage.setItem('theme', 'light');
+                    }
+                });
+            }
+        });
+    </script>
+    
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
